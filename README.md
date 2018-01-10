@@ -1,1 +1,4 @@
-# Mailer
+# Scheduler ultimate
+
+* Michał Krzus
+* Dariusz Steblik

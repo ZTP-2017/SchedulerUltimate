@@ -1,6 +1,5 @@
 ﻿using FluentMailer.Interfaces;
 using System.Threading.Tasks;
-using Scheduler.Mailer.Interfaces;
 
 namespace Scheduler.Mailer
 {

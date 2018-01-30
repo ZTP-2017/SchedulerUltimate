@@ -16,13 +16,14 @@ namespace Scheduler
             _sender = sender;
         }
 
-        public void Start()
+        public void Start(Settings settings)
         {
             try
             {
-                _webApp = WebApp.Start<Startup>("http://localhost:8080");
+                _webApp = WebApp.Start<Startup>(settings.HostingUrl);
 
                 _sender.SetSkipValue(0);
+                _sender.LoadAllMessagesFromFile(settings.DataFilePath);
 
                 RecurringJob.AddOrUpdate(
                     () => _sender.SendEmails(),

@@ -1,15 +1,14 @@
 ﻿using Akka.Actor;
-using Scheduler.Mailer.Interfaces;
+using Scheduler.Mailer;
 using Scheduler.Messages;
 
 namespace Scheduler.Actors
 {
-    public class EmailActor : ReceiveActor
+    public class SendActor : ReceiveActor
     {
         private readonly IMailService _mailService;
-        private ICancelable _cancelable;
 
-        public EmailActor(IMailService mailService)
+        public SendActor(IMailService mailService)
         {
             _mailService = mailService;
             Receive<EmailRequestMessage>(x => Handle(x));

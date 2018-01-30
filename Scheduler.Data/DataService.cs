@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using CsvHelper;
-using Scheduler.Data.Interfaces;
 
 namespace Scheduler.Data
 {

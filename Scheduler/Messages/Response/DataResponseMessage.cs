@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Scheduler.Models;
 
-namespace Scheduler.Messages
+namespace Scheduler.Messages.Response
 {
     public class DataResponseMessage
     {

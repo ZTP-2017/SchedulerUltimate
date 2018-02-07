@@ -35,6 +35,9 @@
     <Reference Include="Akka, Version=1.3.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Akka.1.3.2\lib\net45\Akka.dll</HintPath>
     </Reference>
+    <Reference Include="Akka.DI.Core, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Akka.DI.Core.1.3.0\lib\net45\Akka.DI.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Autofac, Version=4.6.2.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.4.6.2\lib\net45\Autofac.dll</HintPath>
     </Reference>
@@ -71,24 +74,6 @@
     <Reference Include="RazorEngine, Version=3.0.0.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
       <HintPath>..\packages\RazorEngine.3.0.0\lib\net40\RazorEngine.dll</HintPath>
     </Reference>
-    <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.2.5.0\lib\net46\Serilog.dll</HintPath>
-    </Reference>
-    <Reference Include="Serilog.Sinks.ColoredConsole, Version=3.0.1.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.Sinks.ColoredConsole.3.0.1\lib\net45\Serilog.Sinks.ColoredConsole.dll</HintPath>
-    </Reference>
-    <Reference Include="Serilog.Sinks.Console, Version=3.0.1.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.Sinks.Console.3.0.1\lib\net45\Serilog.Sinks.Console.dll</HintPath>
-    </Reference>
-    <Reference Include="Serilog.Sinks.File, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.Sinks.File.3.2.0\lib\net45\Serilog.Sinks.File.dll</HintPath>
-    </Reference>
-    <Reference Include="Serilog.Sinks.Literate, Version=3.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.Sinks.Literate.3.0.0\lib\net45\Serilog.Sinks.Literate.dll</HintPath>
-    </Reference>
-    <Reference Include="Serilog.Sinks.RollingFile, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.Sinks.RollingFile.3.3.0\lib\net45\Serilog.Sinks.RollingFile.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
@@ -118,18 +103,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actors\DataActor.cs" />
+    <Compile Include="Actors\LogActor.cs" />
     <Compile Include="Actors\SendActor.cs" />
-    <Compile Include="Messages\DataRequestMessage.cs" />
-    <Compile Include="Messages\DataResponseMessage.cs" />
-    <Compile Include="Messages\EmailRequestMessage.cs" />
-    <Compile Include="Messages\EmailResponseMessage.cs" />
+    <Compile Include="Actors\SenderActor.cs" />
+    <Compile Include="Messages\Request\DataRequestMessage.cs" />
+    <Compile Include="Messages\Request\LogRequestMessage.cs" />
+    <Compile Include="Messages\Request\SenderRequestMessage.cs" />
+    <Compile Include="Messages\Response\DataResponseMessage.cs" />
+    <Compile Include="Messages\Request\EmailRequestMessage.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="Interfaces\ISender.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scheduler.cs" />
-    <Compile Include="Sender.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -140,6 +126,10 @@
     <ProjectReference Include="..\Scheduler.Data\Scheduler.Data.csproj">
       <Project>{b5187eec-ce11-4224-8224-52feca6e9b63}</Project>
       <Name>Scheduler.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Scheduler.Logger\Scheduler.Logger.csproj">
+      <Project>{2afc5e5b-e609-4b5a-9ffd-0bb2dad0b014}</Project>
+      <Name>Scheduler.Logger</Name>
     </ProjectReference>
     <ProjectReference Include="..\Scheduler.Mailer\Scheduler.Mailer.csproj">
       <Project>{f685dfb7-fb0f-4cee-8849-ba55c0f3f45f}</Project>

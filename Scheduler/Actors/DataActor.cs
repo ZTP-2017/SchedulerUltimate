@@ -1,6 +1,7 @@
 ﻿using Akka.Actor;
 using Scheduler.Data;
-using Scheduler.Messages;
+using Scheduler.Messages.Request;
+using Scheduler.Messages.Response;
 using Scheduler.Models;
 
 namespace Scheduler.Actors
@@ -19,6 +20,7 @@ namespace Scheduler.Actors
         public void Handle(DataRequestMessage message)
         {
             var result = _dataService.GetAllMessages<Message>(message.Path);
+
             Sender.Tell(new DataResponseMessage(result));
         }
     }

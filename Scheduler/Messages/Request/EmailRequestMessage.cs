@@ -1,4 +1,4 @@
-﻿namespace Scheduler.Messages
+﻿namespace Scheduler.Messages.Request
 {
     public class EmailRequestMessage
     {

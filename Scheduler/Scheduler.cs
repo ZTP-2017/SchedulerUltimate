@@ -1,40 +1,54 @@
 ﻿using System;
-using Hangfire;
+using Akka.Actor;
 using Microsoft.Owin.Hosting;
-using Scheduler.Interfaces;
-using Serilog;
+using Scheduler.Actors;
+using Scheduler.Data;
+using Scheduler.Logger;
+using Scheduler.Mailer;
+using Scheduler.Messages.Request;
 
 namespace Scheduler
 {
     public class Scheduler
     {
-        private readonly ISender _sender;
+        private readonly IMailService _mailService;
+        private readonly IDataService _dataService;
+        private readonly ILoggerService _loggerService;
+        private readonly Settings _settings;
+
+        private IActorRef _logActor;
         private IDisposable _webApp;
 
-        public Scheduler(ISender sender)
+        private ActorSystem _actorSystem;
+
+        public Scheduler(IMailService mailService, IDataService dataService, ILoggerService loggerService, Settings settings)
         {
-            _sender = sender;
+            _settings = settings;
+            _dataService = dataService;
+            _mailService = mailService;
+            _loggerService = loggerService;
         }
 
-        public void Start(Settings settings)
+        public void Start()
         {
             try
             {
-                _webApp = WebApp.Start<Startup>(settings.HostingUrl);
+                _webApp = WebApp.Start<Startup>(_settings.HostingUrl);
 
-                _sender.SetSkipValue(0);
-                _sender.LoadAllMessagesFromFile(settings.DataFilePath);
+                _actorSystem = ActorSystem.Create("Scheduler");
 
-                RecurringJob.AddOrUpdate(
-                    () => _sender.SendEmails(),
-                    Cron.Minutely
-                );
+                var logActorProps = Props.Create<LogActor>(_loggerService);
+                _logActor = _actorSystem.ActorOf(logActorProps);
 
-                Log.Information("Start service");
+                var senderActorProps = Props.Create<SenderActor>(_dataService, _mailService, _loggerService, _settings.DataFilePath);
+                var senderActor = _actorSystem.ActorOf(senderActorProps);
+                senderActor.Tell(new SenderRequestMessage(_dataService, _mailService, _settings.DataFilePath));
+
+                _logActor.Tell(new LogRequestMessage(LoggerService.LogType.Info, "Start service", null));
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Start service error: ");
+                _logActor.Tell(new LogRequestMessage(LoggerService.LogType.Error, "Start service error", ex));
             }
         }
 
@@ -43,11 +57,14 @@ namespace Scheduler
             try
             {
                 _webApp.Dispose();
-                Log.Information("Stop service");
+                _actorSystem.Terminate().Wait();
+                _actorSystem.Dispose();
+
+                _logActor.Tell(new LogRequestMessage(LoggerService.LogType.Info, "Stop service", null));
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Stop service error: ");
+                _logActor.Tell(new LogRequestMessage(LoggerService.LogType.Error, "Stop service error", ex));
             }
         }
     }
